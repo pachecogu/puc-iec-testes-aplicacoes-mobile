@@ -4,8 +4,8 @@
 
 - **Aluno:** Gustavo Martins Pacheco
 - **Node:** v22.x
-- **Repo (seu fork):** [https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile.git]
-- **Commit/PR de entrega:** [https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile.git]
+- **Repo (seu fork):** https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile.git
+- **Commit/PR de entrega:** https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile.git
 
 ## Como rodar
 

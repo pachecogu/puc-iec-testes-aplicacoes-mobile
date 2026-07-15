@@ -19,9 +19,9 @@
 //   fireEvent.press(screen.getByTestId('movie-card-heart-1'))
 //   expect(screen.getByTestId('favorites-count')).toHaveTextContent('1')
 
-import { render, screen, fireEvent } from '@testing-library/react-native';
 import { useFavoritesStore } from '@/store/favoritesStore';
-import { renderApp, mockListaDeFilmes } from './_helpers';
+import { createMovieListRobot } from './robots/movieListRobot';
+import { mockListaDeFilmes } from './_helpers';
 
 // jest.mock fica AQUI (é hoisted por arquivo) — é assim que a API vira mockada.
 jest.mock('@/services/api');
@@ -33,28 +33,36 @@ beforeEach(() => {
 
 describe('Fluxo de integração — lista + favoritos (ENTREGA Parte B)', () => {
   it('1.a a lista aparece — achando pelo TEXTO (findByText)', async () => {
-    render(renderApp());
-    expect(await screen.findByText('Matrix')).toBeTruthy();
+    const robot = createMovieListRobot();
+
+    robot.renderizar();
+    await robot.aguardarLista();
   });
 
   it('1.b a lista aparece — achando pelo ROLE (getByRole, prioridade)', async () => {
-    render(renderApp());
-    const botoes = await screen.findAllByRole('button', { name: 'Adicionar favorito' });
+    const robot = createMovieListRobot();
+
+    robot.renderizar();
+    const botoes = await robot.esperarBotoesFavorito();
     expect(botoes).toHaveLength(2);
   });
 
   it('2. favoritar um filme soma no contador do topo (♥ 1)', async () => {
-    render(renderApp());
-    await screen.findByText('Matrix');
-    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
-    expect(screen.getByTestId('favorites-count')).toHaveTextContent('1');
+    const robot = createMovieListRobot();
+
+    robot.renderizar();
+    await robot.aguardarLista();
+    robot.favoritarFilme(1);
+    robot.verificarContadorFavoritos(1);
   });
 
   it('3. desfavoritar volta o contador a 0', async () => {
-    render(renderApp());
-    await screen.findByText('Matrix');
-    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
-    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
-    expect(screen.getByTestId('favorites-count')).toHaveTextContent('0');
+    const robot = createMovieListRobot();
+
+    robot.renderizar();
+    await robot.aguardarLista();
+    robot.favoritarFilme(1);
+    robot.favoritarFilme(1);
+    robot.verificarContadorFavoritos(0);
   });
 });

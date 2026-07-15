@@ -6,16 +6,27 @@
 
 import { posterUrl } from '@/utils/poster-url';
 
+const robot = {
+  verificarUrl(path: string | null, size: 'w185' | 'w342' | 'w500' = 'w342', esperado?: string | null) {
+    const resultado = posterUrl(path, size);
+    if (esperado === null) {
+      expect(resultado).toBeNull();
+      return;
+    }
+    expect(resultado).toBe(esperado);
+  },
+};
+
 describe('posterUrl', () => {
   it('1. monta a URL completa da capa (size padrão w342)', () => {
-    expect(posterUrl('/abc.jpg')).toBe('https://image.tmdb.org/t/p/w342/abc.jpg');
+    robot.verificarUrl('/abc.jpg', 'w342', 'https://image.tmdb.org/t/p/w342/abc.jpg');
   });
 
   it('2. usa o tamanho que eu pedir (w500)', () => {
-    expect(posterUrl('/abc.jpg', 'w500')).toBe('https://image.tmdb.org/t/p/w500/abc.jpg');
+    robot.verificarUrl('/abc.jpg', 'w500', 'https://image.tmdb.org/t/p/w500/abc.jpg');
   });
 
   it('3. filme sem capa retorna null', () => {
-    expect(posterUrl(null)).toBeNull();
+    robot.verificarUrl(null, 'w342', null);
   });
 });

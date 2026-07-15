@@ -11,42 +11,22 @@
 //   act(() => { result.current.toggle(42); });     // muta estado → dentro de act()
 //   expect(result.current.isFavorite(42)).toBe(true);
 
-import { renderHook, act } from '@testing-library/react-native';
-import { useFavorites } from '@/hooks/useFavorites';
-import { useFavoritesStore } from '@/store/favoritesStore';
+import { createUseFavoritesRobot } from './robots/useFavoritesRobot';
 
-// Store é singleton — zere entre testes pra não vazar estado.
-beforeEach(() => useFavoritesStore.setState({ ids: [] }));
+const robot = createUseFavoritesRobot();
+
+beforeEach(() => robot.resetar());
 
 describe('useFavorites (renderHook)', () => {
   it('1. começa sem nenhum favorito (count 0)', () => {
-    const { result } = renderHook(() => useFavorites());
-    expect(result.current.count).toBe(0);
-    expect(result.current.isFavorite(42)).toBe(false);
+    robot.verificarComecoSemFavoritos();
   });
 
   it('2. favoritar e desfavoritar volta a zero (toggle)', () => {
-    const { result } = renderHook(() => useFavorites());
-
-    act(() => {
-      result.current.toggle(42);
-    });
-    expect(result.current.count).toBe(1);
-
-    act(() => {
-      result.current.toggle(42);
-    });
-    expect(result.current.count).toBe(0);
+    robot.favoritarEDesfavoritar(42);
   });
 
   it('3. sei se está favoritado depois de favoritar (isFavorite)', () => {
-    const { result } = renderHook(() => useFavorites());
-
-    act(() => {
-      result.current.toggle(42);
-    });
-
-    expect(result.current.isFavorite(42)).toBe(true);
-    expect(result.current.isFavorite(99)).toBe(false);
+    robot.verificarIsFavorite(42, 99);
   });
 });

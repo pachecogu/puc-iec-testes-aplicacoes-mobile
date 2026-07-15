@@ -12,9 +12,9 @@
 //   fireEvent.press(await screen.findByText('Matrix'));   // findBy = espera async
 //   expect(await screen.findByText('Detalhes do filme')).toBeTruthy();
 
-import { render, screen, fireEvent } from '@testing-library/react-native';
 import { useFavoritesStore } from '@/store/favoritesStore';
-import { renderApp, mockListaDeFilmes } from './_helpers';
+import { createMovieListRobot } from './robots/movieListRobot';
+import { mockListaDeFilmes } from './_helpers';
 
 // jest.mock fica AQUI (é hoisted por arquivo) — é assim que a API vira mockada.
 jest.mock('@/services/api');
@@ -26,8 +26,10 @@ beforeEach(() => {
 
 describe('Navegação (integração)', () => {
   it('1. tocar no filme abre a tela de detalhe', async () => {
-    render(renderApp());
-    fireEvent.press(await screen.findByText('Matrix'));
-    expect(await screen.findByText('Detalhes do filme')).toBeTruthy();
+    const robot = createMovieListRobot();
+
+    robot.renderizar();
+    await robot.abrirDetalheDoFilme('Matrix');
+    await robot.verificarDetalhe('Matrix');
   });
 });

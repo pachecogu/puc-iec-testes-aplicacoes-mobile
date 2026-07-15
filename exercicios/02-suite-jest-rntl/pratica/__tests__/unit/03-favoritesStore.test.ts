@@ -13,57 +13,49 @@
 //   useFavoritesStore.getState().ids            // → [1]
 //   useFavoritesStore.getState().isFavorite(1)  // → true
 
-import { useFavoritesStore } from '@/store/favoritesStore';
+import { createFavoritesStoreRobot } from './robots/favoritesStoreRobot';
+
+const robot = createFavoritesStoreRobot();
 
 beforeEach(() => {
-  useFavoritesStore.setState({ ids: [] });
+  robot.resetar();
 });
-
-// Atalho pra ler estado e actions fora de componente React:
-const s = () => useFavoritesStore.getState();
-
-// Creation Method: "prepara o cenário" (Arrange) falando o domínio,
-// em vez de repetir s().add(...) em cada teste.
-const comFavoritos = (...ids: number[]) => ids.forEach((id) => s().add(id));
-
-// FÁCEIS (1-4): Arrange e Act já escritos — complete SÓ o expect (começam vermelhos → verde).
-// 🔴 DESAFIOS (5-6): ainda it.todo — escreva o teste inteiro a partir da dica.
 
 describe('favoritesStore', () => {
   it('1. favoritar adiciona o filme à lista (add)', () => {
-    s().add(1);
-    expect(s().ids).toEqual([1]);
+    robot.favoritar(1);
+    robot.verificarIdsEsperados([1]);
   });
 
   it('2. desfavoritar tira o filme da lista (remove)', () => {
-    comFavoritos(1);
-    s().remove(1);
-    expect(s().ids).toEqual([]);
+    robot.favoritar(1);
+    robot.remover(1);
+    robot.verificarIdsEsperados([]);
   });
 
   it('3. sei se um filme está favoritado (isFavorite)', () => {
-    comFavoritos(1);
-    expect(s().isFavorite(1)).toBe(true);
-    expect(s().isFavorite(99)).toBe(false);
+    robot.favoritar(1);
+    robot.verificarFavorito(1, true);
+    robot.verificarFavorito(99, false);
   });
 
   it('4. limpar esvazia todos os favoritos (clear)', () => {
-    comFavoritos(1, 2);
-    s().clear();
-    expect(s().ids).toEqual([]);
+    robot.favoritarVarios([1, 2]);
+    robot.limpar();
+    robot.verificarIdsEsperados([]);
   });
 
   it('5. favoritar o mesmo filme 2× não duplica (add)', () => {
-    s().add(1);
-    s().add(1);
-    expect(s().ids).toEqual([1]);
+    robot.favoritar(1);
+    robot.favoritar(1);
+    robot.verificarIdsEsperados([1]);
   });
 
   it('6. o ♥ alterna favoritar/desfavoritar (toggle)', () => {
-    s().toggle(1);
-    expect(s().ids).toEqual([1]);
+    robot.alternar(1);
+    robot.verificarIdsEsperados([1]);
 
-    s().toggle(1);
-    expect(s().ids).toEqual([]);
+    robot.alternar(1);
+    robot.verificarIdsEsperados([]);
   });
 });

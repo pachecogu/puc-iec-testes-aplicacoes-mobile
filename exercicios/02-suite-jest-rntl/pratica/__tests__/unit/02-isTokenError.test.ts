@@ -14,26 +14,28 @@
 // Não precisa de rede nem mock de axios — é função pura sobre o objeto de erro.
 // Os 5 são FÁCEIS e começam vermelhos → preencha o toBe() pra virar verde.
 
-import { isTokenError } from '@/services/api';
+import { createTokenErrorRobot } from './robots/tokenErrorRobot';
+
+const robot = createTokenErrorRobot();
 
 describe('isTokenError', () => {
   it('1. reconhece sessão expirada — HTTP 401 (true)', () => {
-    expect(isTokenError({ response: { status: 401 } })).toBe(true);
+    robot.verificarTokenError({ response: { status: 401 } });
   });
 
   it('2. reconhece a flag de erro de token (true)', () => {
-    expect(isTokenError({ isTokenError: true })).toBe(true);
+    robot.verificarTokenError({ isTokenError: true });
   });
 
   it('3. reconhece token ausente — TMDB_TOKEN_MISSING (true)', () => {
-    expect(isTokenError(new Error('TMDB_TOKEN_MISSING: configure o token'))).toBe(true);
+    robot.verificarTokenError(new Error('TMDB_TOKEN_MISSING: configure o token'));
   });
 
   it('4. null não é erro de token (false)', () => {
-    expect(isTokenError(null)).toBe(false);
+    robot.verificarNaoTokenError(null);
   });
 
   it('5. erro genérico (HTTP 500) não é de token (false)', () => {
-    expect(isTokenError({ response: { status: 500 } })).toBe(false);
+    robot.verificarNaoTokenError({ response: { status: 500 } });
   });
 });

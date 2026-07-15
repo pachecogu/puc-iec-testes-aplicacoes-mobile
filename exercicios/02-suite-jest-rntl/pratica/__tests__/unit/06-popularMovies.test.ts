@@ -10,31 +10,31 @@
 //   const mockedGet = api.get as jest.Mock;
 //   mockedGet.mockResolvedValue({ data: { page: 1, results: [], total_pages: 1, total_results: 0 } });
 
-import { fetchPopularMovies } from '@/queries/movies/get-popular-movies';
-import { api } from '@/services/api';
+import { createPopularMoviesRobot } from './robots/popularMoviesRobot';
 
 jest.mock('@/services/api');
-const mockedGet = api.get as jest.Mock;
+
+const robot = createPopularMoviesRobot();
 
 beforeEach(() => {
-  mockedGet.mockReset();
+  robot.limparMocks();
 });
 
 describe('fetchPopularMovies', () => {
   it('1. busca os filmes populares da página pedida (/movie/popular)', async () => {
-    mockedGet.mockResolvedValue({ data: { page: 1, results: [], total_pages: 1, total_results: 0 } });
+    robot.mockarResposta({ page: 1, results: [], total_pages: 1, total_results: 0 });
 
-    await fetchPopularMovies(2);
+    await robot.buscarPagina(2);
 
-    expect(mockedGet).toHaveBeenCalledWith('/movie/popular', { params: { page: 2 } });
+    robot.verificarChamadaDaPagina(2);
   });
 
   it('2. devolve os filmes recebidos da API (data)', async () => {
     const payload = { page: 1, results: [{ id: 1, title: 'Matrix' }], total_pages: 1, total_results: 1 };
-    mockedGet.mockResolvedValue({ data: payload });
+    robot.mockarResposta(payload);
 
-    const result = await fetchPopularMovies(1);
+    const result = await robot.buscarPagina(1);
 
-    expect(result).toEqual(payload);
+    robot.verificarResultado(result, payload);
   });
 });

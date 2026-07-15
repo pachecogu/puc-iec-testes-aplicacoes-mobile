@@ -17,23 +17,23 @@
 import { isTokenError } from '@/services/api';
 
 describe('isTokenError', () => {
-  it('1. reconhece sessão expirada — HTTP 401 (true)', () => {   // 🧑‍🏫 em aula
+  it('1. reconhece sessão expirada — HTTP 401 (true)', () => {
     expect(isTokenError({ response: { status: 401 } })).toBe(true);
   });
 
-  it('2. reconhece a flag de erro de token (true)', () => {   // 🧑‍🏫 em aula
+  it('2. reconhece a flag de erro de token (true)', () => {
     expect(isTokenError({ isTokenError: true })).toBe(true);
   });
 
-  it('3. reconhece token ausente — TMDB_TOKEN_MISSING (true)', () => {   // 🧑‍💻 aluno
+  it('3. reconhece token ausente — TMDB_TOKEN_MISSING (true)', () => {
     expect(isTokenError(new Error('TMDB_TOKEN_MISSING: configure o token'))).toBe(true);
   });
 
-  it('4. null não é erro de token (false)', () => {   // 🧑‍💻 aluno
+  it('4. null não é erro de token (false)', () => {
     expect(isTokenError(null)).toBe(false);
   });
 
-  it('5. erro genérico (HTTP 500) não é de token (false)', () => {   // 🧑‍💻 aluno
+  it('5. erro genérico (HTTP 500) não é de token (false)', () => {
     expect(isTokenError({ response: { status: 500 } })).toBe(false);
   });
 });

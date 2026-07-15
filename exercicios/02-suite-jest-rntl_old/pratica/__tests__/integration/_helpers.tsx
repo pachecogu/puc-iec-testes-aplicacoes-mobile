@@ -28,14 +28,7 @@ export const mockListaDeFilmes = (results = filmes) => {
 // Monta o app num QueryClient novo por teste (cache não vaza). retry:false → um
 // erro não fica re-tentando e travando o teste. Use assim: render(renderApp()).
 export function renderApp() {
-  const client = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-        gcTime: Infinity,
-      },
-    },
-  });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
   return (
     <QueryClientProvider client={client}>
       <AppNavigator />

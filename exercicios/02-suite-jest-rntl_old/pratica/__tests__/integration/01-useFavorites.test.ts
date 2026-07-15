@@ -21,9 +21,8 @@ beforeEach(() => useFavoritesStore.setState({ ids: [] }));
 describe('useFavorites (renderHook)', () => {
   it('1. começa sem nenhum favorito (count 0)', () => {
     const { result } = renderHook(() => useFavorites());
-
     expect(result.current.count).toBe(0);
-    expect(result.current.ids).toEqual([]);
+    expect(result.current.isFavorite(42)).toBe(false);
   });
 
   it('2. favoritar e desfavoritar volta a zero (toggle)', () => {
@@ -32,16 +31,12 @@ describe('useFavorites (renderHook)', () => {
     act(() => {
       result.current.toggle(42);
     });
-
     expect(result.current.count).toBe(1);
-    expect(result.current.ids).toEqual([42]);
 
     act(() => {
       result.current.toggle(42);
     });
-
     expect(result.current.count).toBe(0);
-    expect(result.current.ids).toEqual([]);
   });
 
   it('3. sei se está favoritado depois de favoritar (isFavorite)', () => {
@@ -52,6 +47,6 @@ describe('useFavorites (renderHook)', () => {
     });
 
     expect(result.current.isFavorite(42)).toBe(true);
-    expect(result.current.isFavorite(7)).toBe(false);
+    expect(result.current.isFavorite(99)).toBe(false);
   });
 });

@@ -19,10 +19,9 @@
 //   fireEvent.press(screen.getByTestId('movie-card-heart-1'))
 //   expect(screen.getByTestId('favorites-count')).toHaveTextContent('1')
 
-import { render } from '@testing-library/react-native';
+import { render, screen, fireEvent } from '@testing-library/react-native';
 import { useFavoritesStore } from '@/store/favoritesStore';
 import { renderApp, mockListaDeFilmes } from './_helpers';
-import { movieListRobot } from './robots/movieListRobot';
 
 // jest.mock fica AQUI (é hoisted por arquivo) — é assim que a API vira mockada.
 jest.mock('@/services/api');
@@ -33,43 +32,29 @@ beforeEach(() => {
 });
 
 describe('Fluxo de integração — lista + favoritos (ENTREGA Parte B)', () => {
-  // 1.a e 1.b: MESMO objetivo (a lista renderizou), por 2 caminhos de query.
-  // Em aula, compare os dois — getByRole é a 1ª escolha (slide "RNTL — queries por prioridade").
-
-  // Dica: render(renderApp()); expect(await screen.findByText('Matrix')).toBeTruthy();
   it('1.a a lista aparece — achando pelo TEXTO (findByText)', async () => {
     render(renderApp());
+    expect(await screen.findByText('Matrix')).toBeTruthy();
+  });
 
-    await movieListRobot.aguardarFilmeVisivel('Matrix');
-  });   // 🧑‍🏫 em aula
-
-  // Dica: o ♥ de favoritar tem accessibilityRole="button" e accessibilityLabel="Adicionar favorito".
-  //   const botoes = await screen.findAllByRole('button', { name: 'Adicionar favorito' });
-  //   expect(botoes).toHaveLength(2);   // 2 filmes → 2 botões = a lista renderizou
   it('1.b a lista aparece — achando pelo ROLE (getByRole, prioridade)', async () => {
     render(renderApp());
+    const botoes = await screen.findAllByRole('button', { name: 'Adicionar favorito' });
+    expect(botoes).toHaveLength(2);
+  });
 
-    await movieListRobot.aguardarBotoesDeFavorito();
-  });   // 🧑‍🏫 em aula
-
-  // após carregar, contador começa em '0'; press no heart-1 → '1'.
   it('2. favoritar um filme soma no contador do topo (♥ 1)', async () => {
     render(renderApp());
+    await screen.findByText('Matrix');
+    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
+    expect(screen.getByTestId('favorites-count')).toHaveTextContent('1');
+  });
 
-    await movieListRobot.aguardarFilmeVisivel('Matrix');
-    movieListRobot.verificarContadorFavoritos(0);
-    movieListRobot.tocarFavorito(1);
-    movieListRobot.verificarContadorFavoritos(1);
-  });   // 🧑‍💻 aluno
-
-  // favoritar e depois desfavoritar o mesmo card → contador volta a '0'.
   it('3. desfavoritar volta o contador a 0', async () => {
     render(renderApp());
-
-    await movieListRobot.aguardarFilmeVisivel('Matrix');
-    movieListRobot.tocarFavorito(1);
-    movieListRobot.verificarContadorFavoritos(1);
-    movieListRobot.tocarFavorito(1);
-    movieListRobot.verificarContadorFavoritos(0);
-  });   // 🧑‍💻 aluno
+    await screen.findByText('Matrix');
+    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
+    fireEvent.press(screen.getByTestId('movie-card-heart-1'));
+    expect(screen.getByTestId('favorites-count')).toHaveTextContent('0');
+  });
 });

@@ -1,90 +1,77 @@
-# Atividade 2 — Suíte Unitária sobre App RN (10 pts)
+# 02-suite-jest-rntl
 
-> **TAM** | **Aula:** 2 (28/05/2026) | **Entrega:** 11/06/2026
+Suíte de testes em Jest e React Native Testing Library para o app de prática desta pasta. O projeto já vem estruturado para separar testes unitários, testes de integração e robots reutilizáveis que encapsulam interações repetidas.
 
-## Objetivo
+## Visão geral
 
-Escrever uma **suíte de testes unitários (Jest + RNTL)** sobre um app React Native que já vem implementado — o mesmo app TMDB da disciplina de Arquitetura. Foco do QA: testar código existente, **não** implementar feature.
+A base desta suíte segue o **robot pattern**. Na prática, isso significa que a lógica de renderização, queries e ações de usuário fica concentrada em robots, enquanto os arquivos de teste passam a expressar apenas a intenção de cada cenário.
 
-## Por onde começar
+Essa organização ajuda a manter os testes mais legíveis e reduz a repetição entre arquivos parecidos.
 
-1. **Enunciado completo:** [`enunciado.md`](./enunciado.md)
-2. **Guia passo a passo:** [`guia-passo-a-passo.md`](./guia-passo-a-passo.md)
-3. **App + scaffolds:** [`pratica/`](./pratica/) — leia o `README.md` do exercício
-4. **Modelo de README de entrega:** [`template-relatorio.md`](./template-relatorio.md)
+## Estrutura
+
+```text
+pratica/
+├── __tests__/
+│   ├── unit/
+│   │   ├── 01-posterUrl.test.ts
+│   │   ├── 02-isTokenError.test.ts
+│   │   ├── 03-favoritesStore.test.ts
+│   │   ├── 04-MovieCard.test.tsx
+│   │   ├── 05-counterStore.test.ts
+│   │   ├── 06-popularMovies.test.ts
+│   │   └── robots/
+│   └── integration/
+│       ├── 01-useFavorites.test.ts
+│       ├── 02-navigation.test.tsx
+│       ├── 03-movieFlow.integration.test.tsx
+│       └── robots/
+├── src/
+└── README.md
+```
+
+## Robots disponíveis
+
+- [`createFavoritesStoreRobot`](./pratica/__tests__/unit/robots/favoritesStoreRobot.ts)
+- [`createCounterStoreRobot`](./pratica/__tests__/unit/robots/counterStoreRobot.ts)
+- [`createTokenErrorRobot`](./pratica/__tests__/unit/robots/tokenErrorRobot.ts)
+- [`createMovieCardRobot`](./pratica/__tests__/unit/robots/movieCardRobot.ts)
+- [`createPopularMoviesRobot`](./pratica/__tests__/unit/robots/popularMoviesRobot.ts)
+- [`createUseFavoritesRobot`](./pratica/__tests__/integration/robots/useFavoritesRobot.ts)
+- [`createMovieListRobot`](./pratica/__tests__/integration/robots/movieListRobot.ts)
+
+## Como rodar
 
 ```bash
 cd pratica
 npm install
-npm test     # 3 verdes (posterUrl) + alguns VERMELHOS (complete o expect) + alguns todo (desafios)
+npm test
 ```
 
-## Como o exercício está montado (2 níveis)
+## Organização da suíte
 
-- **Fáceis** ✅ — já são `it()` com **Arrange/Act prontos**; você completa **só o `expect`**. Começam **vermelhos** → ficam verdes quando você preenche o valor esperado.
-- **Desafios** 🔴 — ainda `it.todo`; você escreve o teste **inteiro** a partir da dica logo acima.
+### Unitários
 
-> 📌 **Modelo 100% resolvido:** [`posterUrl.test.ts`](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/posterUrl.test.ts#L8) — leia antes de começar.
+Os testes unitários cobrem funções puras, stores Zustand, o componente `MovieCard` e o mock de dependência para `popularMovies`.
 
-## Onde escrever cada teste (links diretos por linha)
+### Integração
 
-### 1. `favoritesStore.test.ts` — store Zustand
+Os testes de integração cobrem o hook `useFavorites`, a navegação entre telas e o fluxo completo da lista com favoritos e detalhe.
 
-| Teste | Nível | Abrir |
-|---|---|---|
-| `add(id)` adiciona o id | ✅ fácil | [linha 27](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L27) |
-| `remove(id)` tira o id | ✅ fácil | [linha 34](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L34) |
-| `isFavorite(id)` reflete estado | ✅ fácil | [linha 43](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L43) |
-| `clear()` esvazia | ✅ fácil | [linha 51](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L51) |
-| `add(id)` não duplica | 🔴 desafio | [linha 63](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L63) |
-| `toggle(id)` adiciona/remove | 🔴 desafio | [linha 67](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/favoritesStore.test.ts#L67) |
+## Exemplo de uso do robot pattern
 
-### 2. `counterStore.test.ts` — store Zustand (todos ✅ fáceis)
+```ts
+const robot = createMovieListRobot();
+robot.renderizar();
+await robot.aguardarLista();
+robot.favoritarFilme(1);
+robot.verificarContadorFavoritos(1);
+```
 
-| Teste | Abrir |
-|---|---|
-| `increment` soma 1 | [linha 21](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/counterStore.test.ts#L21) |
-| `decrement` subtrai 1 | [linha 28](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/counterStore.test.ts#L28) |
-| `reset` volta pra 0 | [linha 35](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/counterStore.test.ts#L35) |
+## Arquivos principais
 
-### 3. `api.test.ts` — `isTokenError` (todos ✅ fáceis)
+- [README do app](./pratica/README.md)
+- [Estratégia comparativa](./README-comparativo.md)
+- [Guia passo a passo](./guia-passo-a-passo.md)
+- [Enunciado](./enunciado.md)
 
-| Teste | Abrir |
-|---|---|
-| `true` pra `status 401` | [linha 19](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/api.test.ts#L19) |
-| `true` pra flag `isTokenError` | [linha 23](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/api.test.ts#L23) |
-| `true` pra `TMDB_TOKEN_MISSING` | [linha 27](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/api.test.ts#L27) |
-| `false` pra `null` | [linha 31](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/api.test.ts#L31) |
-| `false` pra erro genérico (500) | [linha 35](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/api.test.ts#L35) |
-
-### 4. `MovieCard.test.tsx` — teste de tela (RNTL) 🔴 **parte mais difícil**
-
-Escreva o corpo inteiro (render + query + assert). Mock de navegação já vem pronto.
-
-| Teste | Abrir |
-|---|---|
-| renderiza o título | [linha 36](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/MovieCard.test.tsx#L36) |
-| renderiza a nota (`⭐ 8.7`) | [linha 39](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/MovieCard.test.tsx#L39) |
-| toque no card navega | [linha 43](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/MovieCard.test.tsx#L43) |
-
-### 🎁 Bônus — `popularMovies.test.ts` (mock de dependência)
-
-| Teste | Abrir |
-|---|---|
-| chama `/movie/popular` com a page | [linha 22](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/popularMovies.test.ts#L22) |
-| devolve o `data` da resposta | [linha 23](https://github.com/jacksonsmith/puc-iec-testes-aplicacoes-mobile/blob/main/exercicios/02-suite-jest-rntl/pratica/__tests__/popularMovies.test.ts#L23) |
-
-## O que entregar
-
-| # | Critério | Peso |
-|---|----------|------|
-| 1 | `npm install && npm test` roda em < 15min (eliminatório) | 2 |
-| 2 | Testes `favoritesStore` (6 verdes) | 2 |
-| 3 | Teste de tela `MovieCard` (RNTL) — render + press navega | 2 |
-| 4 | Testes `isTokenError` (5 verdes) | 2 |
-| 5 | Testes `counterStore` (3 verdes) | 1 |
-| 6 | Cobertura ≥ 70% em `src/store` e `src/utils` | 1 |
-
-**Total: 10 pts.** Bônus (arredondamento): mock de query (`jest.mock`), CI verde no fork, testes parametrizados (`it.each`).
-
-> Você trabalha em `starter/__tests__/`. **Não comite `node_modules/` nem `coverage/`** — o `.gitignore` já cuida.

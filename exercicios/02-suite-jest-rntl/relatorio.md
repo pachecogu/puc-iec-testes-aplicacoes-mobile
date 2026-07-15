@@ -3,8 +3,11 @@
 ## 0. Identificação
 
 - **Tema:** 2 — Suíte de testes unitários e integração com robot pattern
-- **Grupo (nomes completos):**
+- **Integrantes do Grupo:**
   - Gustavo Martins Pacheco
+  - Cristiany Helena de Paula
+  - Cristyanne de Souza Leal
+  - Giovanna Queiroz Melchiori Dantas
 
 ---
 
@@ -60,7 +63,7 @@ Outro resultado prático foi a capacidade de adicionar novos cenários com pouca
 
 ## 6. Conclusão
 
-O projeto mostrou que o robot pattern é útil quando a suíte começa a repetir muito fluxo de setup e interação. A principal melhoria foi de manutenção: os testes ficaram mais legíveis, mais curtos e mais fáceis de estender sem duplicar estrutura. Em vez de concentrar esforço em boilerplate, a suíte passou a registrar melhor a intenção de cada cenário.
+O projeto mostrou que o robot pattern é útil quando a suíte começa a repetir muito fluxo de setup e interação. A principal melhoria foi de manutenção: os testes ficaram mais legíveis, mais curtos e mais fáceis de estender sem duplicar estrutura. Em vez de gastar tempo com tarefas repetitivas de configuração, a suíte passou a mostrar melhor a intenção de cada cenário.
 
 Se houvesse mais tempo, o próximo passo seria ampliar o padrão para outros fluxos de integração e padronizar ainda mais os nomes dos robots e métodos. O aprendizado principal foi que, em testes, organização é parte da qualidade: uma suíte boa não é só a que passa, mas a que continua fácil de evoluir.
 

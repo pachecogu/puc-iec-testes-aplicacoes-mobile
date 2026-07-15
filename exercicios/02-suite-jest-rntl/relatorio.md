@@ -8,6 +8,9 @@
   - Cristiany Helena de Paula
   - Cristyanne de Souza Leal
   - Giovanna Queiroz Melchiori Dantas
+  
+  **Repositório Git:**
+  - https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile/tree/TrabalhoFinal/exercicios/02-suite-jest-rntl
 
 ---
 
@@ -82,7 +85,7 @@ Se houvesse mais tempo, o próximo passo seria ampliar o padrão para outros flu
 
 ### Links e evidência adicional
 
-- **Repo GitHub:** https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile.git
+- **Repo GitHub:** https://github.com/pachecogu/puc-iec-testes-aplicacoes-mobile/tree/TrabalhoFinal/exercicios/02-suite-jest-rntl
 - **Comparativo antes/depois:** [README-comparativo.md](./README-comparativo.md)
 - **Robot de lista:** [movieListRobot.ts](./pratica/__tests__/integration/robots/movieListRobot.ts)
 - **Robot de favoritos:** [useFavoritesRobot.ts](./pratica/__tests__/integration/robots/useFavoritesRobot.ts)
